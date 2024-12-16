@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bizim Hikayemiz</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Comic Sans MS', Arial, sans-serif;
+            background-image: url('resim.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 3rem;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        nav a {
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        section {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            margin: 20px;
+            border-radius: 10px;
+            color: black;
+        }
+
+        #adminSection {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        #adminSection button {
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #adminSection button:hover {
+            background-color: #555;
+        }
+
+        #uploadForm {
+            display: none;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            position: absolute;
+            bottom: 60px;
+            right: 20px;
+        }
+
+        #uploadForm input {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Bizim Hikayemiz</h1>
+    </header>
+
+    <nav>
+        <a href="#animations">Animasyonlar</a>
+        <a href="#about">Hakkında</a>
+        <a href="#contact">İletişim</a>
+    </nav>
+
+    <section id="animations">
+        <h2>Animasyonlar</h2>
+        <video id="uploadedVideo" controls style="display:none; width: 100%; max-width: 600px;">
+            <source id="videoSource" src="" type="video/mp4">
+            Tarayıcınız bu videoyu oynatmayı desteklemiyor.
+        </video>
+    </section>
+
+    <section id="about">
+        <h2>Hakkında</h2>
+        <p>"Bizim Hikayemiz", çocukların hikaye anlatıcılığını ve animasyonları keşfetmeleri için oluşturulmuş bir platformdur. Bu platformda 25 çocuktan aldığımız hikayelerin 10 tanesini animasyona dönüştürüp seslendirdik. Eğer sizde güzel hikayeler bulduysanız iletişim bölümünden bize ulaşabilirsiniz.</p>
+    </section>
+
+    <section id="contact">
+        <h2>İletişim</h2>
+        <p>Bizimle iletişime geçmek için: <a href="mailto:bulutgezginii@gmail.com">bulutgezginii@gmail.com</a></p>
+    </section>
+
+    <div id="adminSection">
+        <button onclick="showPasswordPrompt()">Yeni Animasyon Oluştur</button>
+
+        <div id="uploadForm">
+            <form id="uploadVideoForm" enctype="multipart/form-data">
+                <input type="file" id="videoInput" accept="video/*" required><br>
+                <button type="button" onclick="uploadVideo()">Yükle</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const adminPassword = "admin6789"; // Admin şifresi
+
+        // Sayfa yüklendiğinde animasyonları yerel depolamadan al
+        window.onload = function () {
+            const storedVideo = localStorage.getItem('uploadedVideo');
+            if (storedVideo) {
+                const videoElement = document.getElementById('uploadedVideo');
+                const videoSource = document.getElementById('videoSource');
+                videoSource.src = storedVideo;
+                videoElement.style.display = 'block';
+                videoElement.load();
+            }
+        };
+
+        function showPasswordPrompt() {
+            const password = prompt("Admin şifresini giriniz:");
+            if (password === adminPassword) {
+                document.getElementById('uploadForm').style.display = 'block';
+            } else {
+                alert("Yanlış şifre!");
+            }
+        }
+
+        function uploadVideo() {
+            const videoInput = document.getElementById('videoInput');
+            const videoFile = videoInput.files[0];
+
+            if (videoFile) {
+                const videoURL = URL.createObjectURL(videoFile);
+
+                // Videoyu yerel depolamaya kaydet
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    localStorage.setItem('uploadedVideo', e.target.result);
+                };
+                reader.readAsDataURL(videoFile);
+
+                const videoElement = document.getElementById('uploadedVideo');
+                const videoSource = document.getElementById('videoSource');
+
+                videoSource.src = videoURL;
+                videoElement.style.display = 'block';
+                videoElement.load();
+                alert("Video başarıyla yüklendi!");
+            } else {
+                alert("Lütfen bir video seçin.");
+            }
+        }
+    </script>
+</body>
+</html>
